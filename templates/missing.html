@@ -1,0 +1,1 @@
+{% extends 'base.html' %}{% block content %}<a class="back" href="{{ url_for('admin_dashboard', date=d) }}">← Dashboard</a><h1>Fehlende Eingaben</h1>{% for r, st in rows %}<a class="row danger" href="{{ url_for('route_detail', route_id=r.id, date=d) }}">{{ r.name }} · {{ r.driver_name or 'kein Fahrer' }}</a>{% else %}<p>Alles erledigt.</p>{% endfor %}{% endblock %}

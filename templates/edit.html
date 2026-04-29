@@ -1,0 +1,55 @@
+{% extends 'base.html' %}{% block content %}
+<a class="back" href="{{ url_for('manage', what=what) }}">← Zurück</a>
+<h1>{{ what|capitalize }} bearbeiten</h1>
+<section class="card">
+<form method="post" class="gridform">
+{% if what=='drivers' %}
+<input name="first_name" placeholder="Vorname" value="{{ item.first_name }}" required>
+<input name="last_name" placeholder="Nachname" value="{{ item.last_name }}" required>
+<input name="phone" placeholder="Telefon" value="{{ item.phone or '' }}">
+<label>Führerschein bis<input name="license_until" type="date" value="{{ item.license_until or '' }}"></label>
+<label>P-Schein bis<input name="pschein_until" type="date" value="{{ item.pschein_until or '' }}"></label>
+<input name="username" placeholder="Login" value="{{ user.username if user else '' }}">
+<input name="password" placeholder="Neues Passwort leer lassen = unverändert">
+<label class="check"><input type="checkbox" name="active" {% if item.active %}checked{% endif %}> aktiv</label>
+{% elif what=='vehicles' %}
+<input name="plate" placeholder="Kennzeichen" value="{{ item.plate }}" required>
+<input name="name" placeholder="Name" value="{{ item.name or '' }}">
+<input name="seats" type="number" placeholder="Sitze" value="{{ item.seats or 9 }}">
+<input name="kind" placeholder="Art" value="{{ item.kind or '' }}">
+<label>TÜV bis<input name="tuev_until" type="date" value="{{ item.tuev_until or '' }}"></label>
+<label>Versicherung bis<input name="insurance_until" type="date" value="{{ item.insurance_until or '' }}"></label>
+<select name="status"><option value="active" {% if item.status=='active' %}selected{% endif %}>active</option><option value="inactive" {% if item.status=='inactive' %}selected{% endif %}>inactive</option><option value="repair" {% if item.status=='repair' %}selected{% endif %}>repair</option></select>
+{% elif what=='schools' %}
+<input name="name" placeholder="Schulname" value="{{ item.name }}" required>
+<input name="address" placeholder="Adresse" value="{{ item.address or '' }}">
+<input name="contact" placeholder="Kontakt" value="{{ item.contact or '' }}">
+<input name="email" placeholder="E-Mail" value="{{ item.email or '' }}">
+<input name="phone" placeholder="Telefon" value="{{ item.phone or '' }}">
+<label class="check"><input type="checkbox" name="active" {% if item.active %}checked{% endif %}> aktiv</label>
+{% elif what=='routes' %}
+<input name="name" placeholder="Route" value="{{ item.name }}" required>
+<select name="school_id">{% for x in data.schools %}<option value="{{ x.id }}" {% if x.id==item.school_id %}selected{% endif %}>{{ x.name }}</option>{% endfor %}</select>
+<select name="driver_id">{% for x in data.drivers %}<option value="{{ x.id }}" {% if x.id==item.driver_id %}selected{% endif %}>{{ x.first_name }} {{ x.last_name }}</option>{% endfor %}</select>
+<select name="vehicle_id">{% for x in data.vehicles %}<option value="{{ x.id }}" {% if x.id==item.vehicle_id %}selected{% endif %}>{{ x.plate }}</option>{% endfor %}</select>
+<label>Startzeit<input name="start_time" type="time" value="{{ item.start_time or '' }}"></label>
+<label>Endzeit<input name="end_time" type="time" value="{{ item.end_time or '' }}"></label>
+<label class="check"><input type="checkbox" name="active" {% if item.active %}checked{% endif %}> aktiv</label>
+{% elif what=='students' %}
+<input name="first_name" placeholder="Vorname" value="{{ item.first_name }}" required>
+<input name="last_name" placeholder="Nachname" value="{{ item.last_name }}" required>
+<select name="school_id">{% for x in data.schools %}<option value="{{ x.id }}" {% if x.id==item.school_id %}selected{% endif %}>{{ x.name }}</option>{% endfor %}</select>
+<select name="route_id">{% for x in data.routes %}<option value="{{ x.id }}" {% if x.id==item.route_id %}selected{% endif %}>{{ x.name }}</option>{% endfor %}</select>
+<select name="driver_id">{% for x in data.drivers %}<option value="{{ x.id }}" {% if x.id==item.driver_id %}selected{% endif %}>{{ x.first_name }} {{ x.last_name }}</option>{% endfor %}</select>
+<select name="hours"><option {% if item.hours==4 %}selected{% endif %}>4</option><option {% if item.hours==6 %}selected{% endif %}>6</option><option {% if item.hours==8 %}selected{% endif %}>8</option></select>
+<label>Start Datum/Zeit<input name="start_dt" type="datetime-local" value="{{ item.start_dt or '' }}"></label>
+<label>Ende Datum/Zeit<input name="end_dt" type="datetime-local" value="{{ item.end_dt or '' }}"></label>
+<input name="address" placeholder="Adresse" value="{{ item.address or '' }}">
+<input name="guardian_phone" placeholder="Eltern Telefon" value="{{ item.guardian_phone or '' }}">
+<input name="note" placeholder="Notiz" value="{{ item.note or '' }}">
+<label class="check"><input type="checkbox" name="active" {% if item.active %}checked{% endif %}> aktiv</label>
+{% endif %}
+<button class="primary">Änderungen speichern</button>
+</form>
+</section>
+{% endblock %}

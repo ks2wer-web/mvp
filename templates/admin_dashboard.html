@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% block content %}
+<div class="page-title"><h1>Heute</h1><form><input type="date" name="date" value="{{ d }}"><button>OK</button></form></div>
+<div class="kpis">
+<a class="kpi" href="#routes"><b>{{ active_routes }}</b><span>aktive Routen</span></a>
+<a class="kpi" href="{{ url_for('missing_detail', date=d) }}"><b>{{ missing|length }}</b><span>ohne Eingabe</span></a>
+<a class="kpi" href="#routes"><b>{{ running }}</b><span>laufen</span></a>
+<a class="kpi" href="#routes"><b>{{ finished }}</b><span>fertig</span></a>
+<a class="kpi" href="{{ url_for('manage', what='students') }}"><b>{{ students_total }}</b><span>Schüler aktiv</span></a>
+<a class="kpi" href="{{ url_for('manage', what='vehicles') }}"><b>{{ vehicles_total }}</b><span>Fahrzeuge</span></a>
+</div>
+<section class="panel danger-panel"><h2>Jetzt prüfen</h2>{% if missing %}{% for r in missing %}<a class="row danger" href="{{ url_for('route_detail', route_id=r.id, date=d) }}">🔴 {{ r.name }} · {{ r.driver_name or 'kein Fahrer' }}</a>{% endfor %}{% else %}<p class="oktext">Keine fehlenden Routen.</p>{% endif %}</section>
+<section class="panel" id="routes"><h2>Routenstatus</h2>{% for r, st in route_cards %}<a class="route-card {{ st.class }}" href="{{ url_for('route_detail', route_id=r.id, date=d) }}"><div><strong>{{ r.name }}</strong><small>{{ r.school_name or '-' }}</small></div><div><span>{{ r.driver_name or 'kein Fahrer' }}</span><small>{{ r.vehicle_plate or 'kein Fahrzeug' }}</small></div><div class="badge">{{ st.label }}</div><div class="bar"><i style="width:{{ st.percent }}%"></i></div><small>{{ st.done }}/{{ st.total }} Eingaben</small></a>{% endfor %}</section>
+<section class="quick"><a href="{{ url_for('manage', what='students') }}">+ Schüler</a><a href="{{ url_for('manage', what='drivers') }}">+ Fahrer</a><a href="{{ url_for('manage', what='routes') }}">+ Route</a><a href="{{ url_for('export_csv') }}">CSV Export</a></section>
+<section class="panel"><h2>Fahrzeug-Warnungen</h2>{% for v in warnings %}<div class="row warn">⚠️ {{ v.plate }} TÜV: {{ v.tuev_until }} Versicherung: {{ v.insurance_until }}</div>{% else %}<p>Keine Warnungen.</p>{% endfor %}</section>
+{% endblock %}
